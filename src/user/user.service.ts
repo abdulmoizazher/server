@@ -8,6 +8,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {CreateUserprofile} from './dto/create-user.profile'
 import{set_user_preferencesDto} from './dto/set.preference.dto'
+import { error } from 'console';
 
 @Injectable()
 export class UserService {
@@ -85,13 +86,12 @@ async get_user_preference(userId: string): Promise<any> {
   if (!existingUser)
 
   {
-      return "user does not exist"
-
+    throw new error("user not found")
   }
 
   if(!existingUser.preferences)
   {
-    return "user did not set preference"
+    throw new error("user did not set preference")
   }
 
   return existingUser.preferences;
