@@ -11,37 +11,37 @@ import{set_user_preferencesDto} from './dto/set.preference.dto'
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post("/register")
+  @Post("register")
   async createUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);
   }
 
-  @Post("/login")
+  @Post("login")
   async loginUser(@Body() loginUserDto: LoginUserDto) {
     return this.userService.loginUser(loginUserDto);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get()
+  @Get('current')
   async getUser(@Request() req) {
     return this.userService.getUser(req.user.userId);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch('update_user_profile')
+  @Patch('user_profile')
   async update_user_profile(@Request() req , @Body() UpdateUserDto:CreateUserprofile ){
   return this.userService.udpateuserprofile(req.user.userId, UpdateUserDto)
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch('set_user_preference')
+  @Patch('user_preference')
   async set_user_preference(@Request() req , @Body() set_user_preferencedto:set_user_preferencesDto ){
   return this.userService.set_user_perference(req.user.userId, set_user_preferencedto)
 
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/get_user_preference')
+  @Get('user_preference')
   async get_user_preference(@Request() req) {
     return this.userService.get_user_preference(req.user.userId);
   }
