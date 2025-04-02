@@ -21,10 +21,7 @@ async user_recommandation (@Request() req):Promise <any | string>
 
 }
 
-@Get('test')
-async test (){
-  return this.UserRec.test();
-}
+
 
 }
 

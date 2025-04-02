@@ -46,31 +46,32 @@ export class RecommandationService {
         const sentiment = "joy";
 
         if (positiveEmotions.includes(sentiment)) {
-            return user_preference.mood_happy;
+            return this.fetch_videos( user_preference.mood_happy);
 
         }
 
         else if (negativeEmotions.includes(sentiment)) {
-            return user_preference.mood_sad;
+            return this.fetch_videos(user_preference.mood_sad);
         }
 
         else if (neutralEmotions.includes(sentiment)) {
-            return user_preference.mood_confused;
+            return  this.fetch_videos(user_preference.mood_confused);
         }
 
 
 
     }
 
-    async test(){
+    async fetch_videos(searchquery :string){
         
         const response = await axios.get(this.youtubeApiUrl, {
             params: {
               key: this.youtubeApiKey,
-              q: 'joy',
+              q: searchquery,
               part: 'snippet',
               maxResults: 10,
               type: 'video',
+              order: 'viewCount', 
             },
         });
         return response.data.items.map(video => ({
