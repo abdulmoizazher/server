@@ -1,8 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import axios from "axios"
+import { sentiment, sentimentDocument } from './schemas/sentimental_analysis.schema';
+import { Model } from 'mongoose';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class SentimentalAnalysisService {
+
+  constructor(
+     @InjectModel(sentiment.name) private userModel: Model<sentimentDocument>,
+      private readonly authService: AuthService,
+  ){
+
+  }
     
     private fastapiurl = "http://0.0.0.0:8000/predict";
 
@@ -23,6 +34,10 @@ export class SentimentalAnalysisService {
         }
       }
 
+      async get_current_sentiment (userID):Promise <string>{
+
+        return
+      }
 }
 
 
