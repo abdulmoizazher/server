@@ -2,18 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
+import { SentimentalAnalysisService } from 'src/sentimental_analysis/sentimental_analysis.service';
 
 @Injectable()
 export class RecommandationService {
 
     private readonly youtubeApiUrl: string;
     private readonly youtubeApiKey: string;
-
+   
  
     
     constructor(
         private readonly userSrv: UserService,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
+        private readonly sentisrv : SentimentalAnalysisService
         
     ) { 
         this.youtubeApiUrl = this.configService.get<string>('YOUTUBE_API_URL');
@@ -41,9 +43,11 @@ export class RecommandationService {
         const neutralEmotions = [
             "confusion", "realization", "surprise", "unknown", "neutral"
         ];
+        console.log(Object.keys(this.sentisrv));
+        console.log('check')
+        const sentiment = await this.sentisrv.get_current_sentiment(userId);
+        console.log(sentiment)
 
-
-        const sentiment = "joy";
 
         if (positiveEmotions.includes(sentiment)) {
             return this.fetch_videos( user_preference.mood_happy);
