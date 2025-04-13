@@ -10,8 +10,9 @@ async function bootstrap() {
 
   app.enableCors({
     origin: '*', // Allow all origins (replace * with your Flutter app URL in production)
-    methods: 'GET,POST,PUT,DELETE,OPTIONS',
+    methods: 'GET,POST,PUT,DELETE,OPTIONS,PATCH',
     allowedHeaders: 'Content-Type,Authorization',
+    credentials: true
   });
 
   

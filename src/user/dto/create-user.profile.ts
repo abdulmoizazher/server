@@ -1,12 +1,18 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString,IsDate } from "class-validator";
+import { IsString } from "class-validator";
 
 export class CreateUserprofile {
   
 
+
+    @ApiProperty({ description: 'nickname of user' })
+    @IsString()
+    name: string;
+
+
     @ApiProperty({ description: 'date fo birth' })
-    @IsDate()
-    DOB: Date;
+    @IsString()
+    DOB: string;
     
 
     @ApiProperty({ description: 'location' })
