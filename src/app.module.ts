@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { ResourcesModule } from './resources/resources.module';
 import { RecommandationModule } from './recommandation/recommandation.module';
 import { SentimentalAnalysisModule } from './sentimental_analysis/sentimental_analysis.module';
+import { ChatbotModule } from './chatbot/chatbot.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { SentimentalAnalysisModule } from './sentimental_analysis/sentimental_an
     ResourcesModule,
     RecommandationModule,
     SentimentalAnalysisModule,
+    ChatbotModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -5,9 +5,11 @@ import { sentiment, sentimentDocument } from './schemas/sentimental_analysis.sch
 import { Model } from 'mongoose';
 import { AuthService } from 'src/auth/auth.service';
 import { console } from 'inspector';
+import e from 'express';
 
 @Injectable()
 export class SentimentalAnalysisService {
+  
 
   constructor(
     @InjectModel(sentiment.name) private sentimentModel: Model<sentimentDocument>,
@@ -19,27 +21,47 @@ export class SentimentalAnalysisService {
   private fastapiurl = "http://0.0.0.0:8000/predict";
 
 
-  async analyzeSentiment(text: string, emotions: Record<string, number>) {
+  async analyzeEmotion(text: string) {
     try {
-      // Convert the emotion object to the required format
-      const emotionsArray = Object.entries(emotions).map(([key, value]) => ({ [key]: value }));
-
-      // Send request to FastAPI
-      const response = await axios.post(this.fastapiurl, { text, emotions: emotionsArray });
-
-      // Get the dominant emotion
-      return response.data;
+      const response = await axios.post<{
+        text: string;
+        predictions: { emotion: string; probability: number }[];
+      }>(this.fastapiurl, { text }, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+  
+      const { text: originalText, predictions } = response.data;
+  
+      const dominantEmotion = predictions.reduce((prev, current) =>
+        (prev.probability > current.probability) ? prev : current
+      );
+      
+      process.stdout.write(JSON.stringify({
+        originalText,
+        allEmotions: predictions,
+        dominantEmotion,
+        summary: `Dominant emotion is ${dominantEmotion.emotion} (${(dominantEmotion.probability * 100).toFixed(1)}%)`
+      }, null, 2));
+      return {
+        originalText,
+        allEmotions: predictions,
+        dominantEmotion,
+        summary: `Dominant emotion is ${dominantEmotion.emotion} (${(dominantEmotion.probability * 100).toFixed(1)}%)`
+      };
+  
     } catch (error) {
-      console.error('Error calling sentiment API:', error);
+      console.error('Analysis failed:', error.response?.data || error.message);
       throw new Error('Sentiment analysis failed');
     }
   }
+
+ 
 
   async get_current_sentiment(userID: string): Promise<any> {
     try {
       process.stdout.write('[1] Function entered');
       
-      // Basic validation
+    
       if (!userID) {
         process.stdout.write('[2] userID is empty');
         return 'Invalid user ID';
@@ -47,7 +69,7 @@ export class SentimentalAnalysisService {
       process.stdout.write(userID);
       
            
-      // Validate ObjectId
+      
       const mongoose = require('mongoose');
       console.log('[6] Is valid ObjectId?', mongoose.isValidObjectId(userID));
       if (!mongoose.isValidObjectId(userID)) {
@@ -55,16 +77,16 @@ export class SentimentalAnalysisService {
         return 'Invalid user ID format';
       }
       
-      // Main query
+      
       console.log('[8] Before findById');
       const query = { userid: userID }
       const existingrecord = await this.sentimentModel
-      .findOne(query).lean() // Note: matches exact field name in your document
+      .findOne(query).lean() 
       
       process.stdout.write("dgsdfg"+existingrecord);
       process.stdout.write('Document fields:'+ Object.keys(existingrecord));
       if (!existingrecord) {
-        console.log('[10] No record found');
+        process.stdout.write('[10] No record found');
         return 'user did not talk to the model today';
       }
       
@@ -92,22 +114,11 @@ async get_sentiment_history(userID: string): Promise<any> {
     process.stdout.write(userID);
     
          
-    // Validate ObjectId
-    const mongoose = require('mongoose');
-    console.log('[6] Is valid ObjectId?', mongoose.isValidObjectId(userID));
-    if (!mongoose.isValidObjectId(userID)) {
-      console.log('[7] Invalid ObjectId format');
-      return 'Invalid user ID format';
-    }
     
-    // Main query
-    console.log('[8] Before findById');
     const query = { userid: userID }
     const existingrecord = await this.sentimentModel
     .findOne(query).lean() // Note: matches exact field name in your document
     
-    process.stdout.write("dgsdfg"+existingrecord);
-    process.stdout.write('Document fields:'+ Object.keys(existingrecord));
     if (!existingrecord) {
       console.log('[10] No record found');
       return 'user did not talk to the model today';
@@ -121,6 +132,29 @@ async get_sentiment_history(userID: string): Promise<any> {
     return 'An error occurred';
   }
 }
- 
+
+  async update_sentiment(sentiment: string, userID:string){
+
+    const query = { userid: userID }
+    const existingrecord = await this.sentimentModel
+    .findOne(query)
+    if (existingrecord){
+
+    existingrecord.sentiment = sentiment;
+    existingrecord.sentiment_history.push(sentiment)
+    await existingrecord.save()
+    return existingrecord;
+  }
+  else{
+    const new_record = new this.sentimentModel;
+    new_record.userid = userID
+    new_record.sentiment = sentiment;
+    new_record.sentiment_history.push(sentiment)
+    await new_record.save()
+    process.stdout.write("hi")
+    return new_record;
+  }
+     
+  }
 
 }
