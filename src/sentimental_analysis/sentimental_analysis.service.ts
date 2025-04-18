@@ -5,7 +5,7 @@ import { sentiment, sentimentDocument } from './schemas/sentimental_analysis.sch
 import { Model } from 'mongoose';
 import { AuthService } from 'src/auth/auth.service';
 import { console } from 'inspector';
-import e from 'express';
+
 
 @Injectable()
 export class SentimentalAnalysisService {
@@ -21,7 +21,7 @@ export class SentimentalAnalysisService {
   private fastapiurl = "http://0.0.0.0:8000/predict";
 
 
-  async analyzeEmotion(text: string) {
+  async analyzeEmotion(text: string, userID: string) {
     try {
       const response = await axios.post<{
         text: string;
@@ -35,6 +35,9 @@ export class SentimentalAnalysisService {
       const dominantEmotion = predictions.reduce((prev, current) =>
         (prev.probability > current.probability) ? prev : current
       );
+      process.stdout.write(""+userID)
+
+      await this.update_sentiment(dominantEmotion.emotion,userID)
       
       process.stdout.write(JSON.stringify({
         originalText,
@@ -104,9 +107,6 @@ export class SentimentalAnalysisService {
 
 async get_sentiment_history(userID: string): Promise<any> {
   try {
-    process.stdout.write('[1] Function entered');
-    
-    // Basic validation
     if (!userID) {
       process.stdout.write('[2] userID is empty');
       return 'Invalid user ID';
@@ -120,8 +120,7 @@ async get_sentiment_history(userID: string): Promise<any> {
     .findOne(query).lean() // Note: matches exact field name in your document
     
     if (!existingrecord) {
-      console.log('[10] No record found');
-      return 'user did not talk to the model today';
+      return 'user did not talk to the model';
     }
     
     process.stdout.write('Collection name:'+ this.sentimentModel.collection.name);
@@ -140,10 +139,21 @@ async get_sentiment_history(userID: string): Promise<any> {
     .findOne(query)
     if (existingrecord){
 
-    existingrecord.sentiment = sentiment;
-    existingrecord.sentiment_history.push(sentiment)
-    await existingrecord.save()
-    return existingrecord;
+      const updated = await this.sentimentModel.findOneAndUpdate(
+        { userid: userID },
+        {
+          $set: { sentiment: sentiment },
+          $push: {
+            sentiment_history: {
+              $each: [ sentiment ],
+              $slice: -7
+            }
+          }
+        },
+        { new: true } 
+      );
+    process.stdout.write("hi")
+    return updated;
   }
   else{
     const new_record = new this.sentimentModel;
@@ -151,7 +161,7 @@ async get_sentiment_history(userID: string): Promise<any> {
     new_record.sentiment = sentiment;
     new_record.sentiment_history.push(sentiment)
     await new_record.save()
-    process.stdout.write("hi")
+    
     return new_record;
   }
      

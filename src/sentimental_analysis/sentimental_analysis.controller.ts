@@ -14,10 +14,10 @@ export class SentimentalAnalysisController {
   async getusersentiment(@Request() req) {
     return this.SentiSrv.get_current_sentiment(req.user.userId);
   }
-
+  @UseGuards(JwtAuthGuard)
   @Post("sentiment")
-  async anaylzesenitmet(){
-    return this.SentiSrv.analyzeEmotion("I'm feeling anxious today");
+  async anaylzesenitmet(@Request() req){
+    return this.SentiSrv.analyzeEmotion("I'm feeling sad today", req.user.userId);
    }
 
    @UseGuards(JwtAuthGuard)

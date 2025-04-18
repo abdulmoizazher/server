@@ -28,6 +28,8 @@ export class RecommandationService {
 
 
         const user_preference = await this.userSrv.get_user_preference(userId);
+        
+        
         const positiveEmotions = [
             "admiration", "amusement", "approval", "caring", "curiosity",
             "desire", "excitement", "gratitude", "joy", "love",
@@ -36,7 +38,7 @@ export class RecommandationService {
         const negativeEmotions = [
             "anger", "annoyance", "disappointment", "disapproval", "disgust",
             "embarrassment", "fear", "grief", "nervousness", "remorse",
-            "sadness", "stress", "anxiety", "depression", "suicidal"
+            "sadness", "Stress", "anxiety", "depression", "suicidal"
         ];
 
 
@@ -45,7 +47,9 @@ export class RecommandationService {
         ];
         console.log(Object.keys(this.sentisrv));
         console.log('check')
-        const sentiment = await this.sentisrv.get_current_sentiment(userId);
+        const sentiment_upper = await this.sentisrv.get_current_sentiment(userId);
+        const sentiment = sentiment_upper.toLowerCase();
+
         console.log(sentiment)
 
 
