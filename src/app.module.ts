@@ -9,6 +9,7 @@ import { ResourcesModule } from './resources/resources.module';
 import { RecommandationModule } from './recommandation/recommandation.module';
 import { SentimentalAnalysisModule } from './sentimental_analysis/sentimental_analysis.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
+import { GeminiService } from './gemini/gemini.service';
 
 @Module({
   imports: [
@@ -30,6 +31,6 @@ import { ChatbotModule } from './chatbot/chatbot.module';
     ChatbotModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, GeminiService],
 })
 export class AppModule {}

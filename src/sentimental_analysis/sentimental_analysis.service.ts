@@ -39,12 +39,7 @@ export class SentimentalAnalysisService {
 
       await this.update_sentiment(dominantEmotion.emotion,userID)
       
-      process.stdout.write(JSON.stringify({
-        originalText,
-        allEmotions: predictions,
-        dominantEmotion,
-        summary: `Dominant emotion is ${dominantEmotion.emotion} (${(dominantEmotion.probability * 100).toFixed(1)}%)`
-      }, null, 2));
+      
       return {
         originalText,
         allEmotions: predictions,
@@ -69,19 +64,10 @@ export class SentimentalAnalysisService {
         process.stdout.write('[2] userID is empty');
         return 'Invalid user ID';
       }
-      process.stdout.write(userID);
+   
       
            
       
-      const mongoose = require('mongoose');
-      console.log('[6] Is valid ObjectId?', mongoose.isValidObjectId(userID));
-      if (!mongoose.isValidObjectId(userID)) {
-        console.log('[7] Invalid ObjectId format');
-        return 'Invalid user ID format';
-      }
-      
-      
-      console.log('[8] Before findById');
       const query = { userid: userID }
       const existingrecord = await this.sentimentModel
       .findOne(query).lean() 
@@ -111,7 +97,7 @@ async get_sentiment_history(userID: string): Promise<any> {
       process.stdout.write('[2] userID is empty');
       return 'Invalid user ID';
     }
-    process.stdout.write(userID);
+    
     
          
     
@@ -152,7 +138,7 @@ async get_sentiment_history(userID: string): Promise<any> {
         },
         { new: true } 
       );
-    process.stdout.write("hi")
+    
     return updated;
   }
   else{
