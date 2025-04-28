@@ -47,7 +47,7 @@ export class GeminiService {
         
 
         const prompt = `
-You are SentiCare, an emotionally aware chatbot helping with mental health.
+You are Senty , an emotionally aware chatbot helping with mental health.
 
 User's current message: "${currentText}"
 Top detected emotions:
