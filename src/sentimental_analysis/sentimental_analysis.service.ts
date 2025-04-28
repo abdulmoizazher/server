@@ -5,6 +5,7 @@ import { sentiment, sentimentDocument } from './schemas/sentimental_analysis.sch
 import { Model } from 'mongoose';
 import { AuthService } from 'src/auth/auth.service';
 import { console } from 'inspector';
+import { ConfigService } from '@nestjs/config';
 
 
 @Injectable()
@@ -14,11 +15,12 @@ export class SentimentalAnalysisService {
   constructor(
     @InjectModel(sentiment.name) private sentimentModel: Model<sentimentDocument>,
     private readonly authService: AuthService,
+    private readonly configService: ConfigService,
   ) {
 
   }
 
-  private fastapiurl = "http://0.0.0.0:8000/predict";
+  private fastapiurl = this.configService.get<string>('SENTIMENTAL_SERVICE_URL');
 
 
   async analyzeEmotion(text: string, userID: string) {
@@ -35,7 +37,7 @@ export class SentimentalAnalysisService {
       const dominantEmotion = predictions.reduce((prev, current) =>
         (prev.probability > current.probability) ? prev : current
       );
-      process.stdout.write(""+userID)
+      
 
       await this.update_sentiment(dominantEmotion.emotion,userID)
       
