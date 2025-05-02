@@ -4,6 +4,7 @@ import { ApiOperation } from '@nestjs/swagger';
 import { ChatbotService } from './chatbot.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { create_chat_dto } from './dtos/create_chat.dtos';
+import { get_chat_dto } from './dtos/get_chat.dto';
 
 @Controller('chatbot')
 export class ChatbotController {
@@ -23,16 +24,16 @@ export class ChatbotController {
     }
     
     @UseGuards(JwtAuthGuard)
-    @Get(':userId')
-    @ApiOperation({ summary: " api to get message of a user" })
+    @Get('all')
+    @ApiOperation({ summary: " api to get chats of a user" })
     async getUserChats(@Request() req) {
       return this.chatsrv.getUserChats(req.user.userId);
     }
   
-    @Get(':chatId/messages')
+    @Get('messages')
     @ApiOperation({ summary: "return all the messages of user and senti in the a particluar chat" })
-    async getMessages(@Param('chatId') chatId: string) {
-      return this.chatsrv.getChatMessages(chatId);
+    async getMessages(@Body() dto : get_chat_dto) {
+      return this.chatsrv.getChatMessages(dto);
     }
 
     @UseGuards(JwtAuthGuard)

@@ -52,8 +52,9 @@ export class ChatbotService {
         return this.chatModel.find({ userId }).sort({ updatedAt: -1 }).lean();
       }
     
-      async getChatMessages(chatId: string) {
-        return this.messageModel.find({ chatId }).sort({ createdAt: 1 }).lean();
+      async getChatMessages(dto) {
+        const chatId = dto.chatid
+        return this.messageModel.find({ chatId}).sort({ createdAt: 1 }).lean();
       }
     
     }

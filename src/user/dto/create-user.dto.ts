@@ -4,7 +4,7 @@ import { IsEmail,IsString } from "class-validator";
 export class CreateUserDto {
   
 
-    @ApiProperty({ description: 'User email' })
+      @ApiProperty({ description: 'User email' })
       @IsEmail()
       email: string;
     

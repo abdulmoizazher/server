@@ -2,10 +2,9 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsString } from "class-validator";
 
 
-export  class create_chat_dto {
+export  class get_chat_dto {
 
-    
-    @ApiProperty({description: "title"})
+    @ApiProperty({description: "chatid"})
     @IsString()
-    title: string;
+    chatid:  string;
 }
