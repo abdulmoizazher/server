@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Patch, Post, UseGuards,Request } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, UseGuards, Request, Param, Query } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ResourcesService } from './resources.service'
 import { CreateResourceDto } from './dtos/create-rescoures.dto';
-import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { get_resource_dto } from './dtos/get-resource.dto';
 
 @Controller('resource')
@@ -13,20 +13,51 @@ export class ResourcesController {
     ) { }
 
     @UseGuards(JwtAuthGuard)
-    @Get("/category")
-    async getresources(@Body() dto: get_resource_dto) {
-        return this.resourceSerivce.category(dto.category)
+
+    @Get("/category/:category")
+    @ApiOperation({ 
+    summary: 'Get resources by category',
+    description: 'Returns all resources belonging to the specified category' 
+  })
+  @ApiParam({
+    name: 'category',
+    required: true,
+    description: 'The category of resources to fetch',
+    example: 'technology'
+  })
+    async getresources(@Param('category') category: string) {
+        return this.resourceSerivce.category(category);
     }
 
 
-    @Get("/id")
-    async get_resources(@Body() dto: get_resource_dto) {
-        return this.resourceSerivce.id(dto.article_id)
+    @Get("/id/:article_id")
+    @ApiOperation({ 
+    summary: 'Get resource by ID',
+    description: 'Returns a single resource with the specified ID' 
+  })
+  @ApiParam({
+    name: 'article_id',
+    required: true,
+    description: 'The unique ID of the resource',
+    example: '507f1f77bcf86cd799439011'
+  })
+    async get_resources(@Param('article_id') article_id: string) {
+        return this.resourceSerivce.id(article_id);
     }
 
     @Get("/title")
-    async get_resource(@Body() dto: get_resource_dto) {
-        return this.resourceSerivce.title(dto.title)
+    @ApiOperation({ 
+    summary: 'Get resource by title',
+    description: 'Returns resources matching the specified title' 
+  })
+  @ApiParam({
+    name: 'title',
+    required: true,
+    description: 'Title of the resource (URL-encoded if spaces)',
+    example: 'Introduction%20to%20NestJS'
+  })
+    async get_resource(@Query('title') title: string) {
+        return this.resourceSerivce.title(title);
     }
 
     @Post('/new')
@@ -48,13 +79,13 @@ export class ResourcesController {
     }
 
     // article.controller.ts
-@UseGuards(JwtAuthGuard)
-@Patch('like')
-async toggleLike(
-  @Body() dto: get_resource_dto, @Request() req
-) {
-  return this.resourceSerivce.toggleLike(dto.article_id, req.user.userId);
-}
+    @UseGuards(JwtAuthGuard)
+    @Patch('like')
+    async toggleLike(
+        @Body() dto: get_resource_dto, @Request() req
+    ) {
+        return this.resourceSerivce.toggleLike(dto.article_id, req.user.userId);
+    }
 
 
 }
