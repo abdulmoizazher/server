@@ -15,20 +15,21 @@ export class Resource extends Document {
   @Prop({ required: false })
   author: string; // Author name (if applicable)
 
-  @Prop({ type: [String], required: false })
-  tags: string[]; // Tags for searching (e.g., ['stress', 'mental health'])
-
   @Prop({ required: false })
   source: string; // External source or reference link
-  
+
   @Prop({ type: Number, default: 0 })
   likes: number; // Number of likes (optional)
 
-  @Prop({ type: Number, default: 0 })
-  views: number; // Number of times the resource has been viewed
 
-  @Prop({ type: [String], required: false })
-  relatedResources: string[]; // Array of related resource IDs
+  @Prop({ type: [String], default: [] })
+  likedBy: string[];// article.schema.ts or article.model.ts
+
+
+  @Prop({ required: false })
+  preview: string; // preview of  (if applicable)
+
+
 }
-export type ResourceDocument = Resource & Document; 
+export type ResourceDocument = Resource & Document;
 export const ResourceSchema = SchemaFactory.createForClass(Resource);

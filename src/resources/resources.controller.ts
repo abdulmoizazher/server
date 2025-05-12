@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, UseGuards,Request } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ResourcesService } from './resources.service'
 import { CreateResourceDto } from './dtos/create-rescoures.dto';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { get_resource_dto } from './dtos/get-resource.dto';
 
 @Controller('resource')
 export class ResourcesController {
@@ -12,9 +13,20 @@ export class ResourcesController {
     ) { }
 
     @UseGuards(JwtAuthGuard)
-    @Get("/get")
-    async getresources(@Body() tags: string) {
-        return
+    @Get("/category")
+    async getresources(@Body() dto: get_resource_dto) {
+        return this.resourceSerivce.category(dto.category)
+    }
+
+
+    @Get("/id")
+    async get_resources(@Body() dto: get_resource_dto) {
+        return this.resourceSerivce.id(dto.article_id)
+    }
+
+    @Get("/title")
+    async get_resource(@Body() dto: get_resource_dto) {
+        return this.resourceSerivce.title(dto.title)
     }
 
     @Post('/new')
@@ -29,10 +41,20 @@ export class ResourcesController {
 
     @Get("/all")
     @ApiOperation({ summary: 'all the titles of resource saved in the database' })
-    async GetTitle() {
+    async list() {
 
-        return this.resourceSerivce.get_titles();
+        return this.resourceSerivce.list();
 
     }
+
+    // article.controller.ts
+@UseGuards(JwtAuthGuard)
+@Patch('like')
+async toggleLike(
+  @Body() dto: get_resource_dto, @Request() req
+) {
+  return this.resourceSerivce.toggleLike(dto.article_id, req.user.userId);
+}
+
 
 }

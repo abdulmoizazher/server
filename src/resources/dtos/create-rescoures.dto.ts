@@ -34,16 +34,7 @@ export class CreateResourceDto {
   @IsString()
   author?: string;
 
-  @ApiPropertyOptional({
-    description: 'List of tags for search and filtering',
-    example: ['mindfulness', 'relaxation', 'stress'],
-    type: [String],
-  })
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  tags?: string[];
-
+  
   @ApiPropertyOptional({
     description: 'Reference or source URL for the content (optional)',
     example: 'https://www.mentalhealth.org/resources/anxiety-guide',
@@ -60,13 +51,7 @@ export class CreateResourceDto {
   @IsNumber()
   likes?: number;
 
-  @ApiPropertyOptional({
-    description: 'Number of times the resource has been viewed (default: 0)',
-    example: 120,
-  })
-  @IsOptional()
-  @IsNumber()
-  views?: number;
+  
 
   @ApiPropertyOptional({
     description: 'IDs of related resources for recommendations or navigation',
@@ -77,4 +62,12 @@ export class CreateResourceDto {
   @IsArray()
   @IsString({ each: true })
   relatedResources?: string[];
+
+  @ApiProperty({
+    description: 'Full content of the self-help resource',
+    example: 'Anxiety attacks can be overwhelming. Here are some techniques to manage them...',
+  })
+  @IsString()
+  @IsNotEmpty()
+  preview: string;
 }

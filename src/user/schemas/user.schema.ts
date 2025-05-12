@@ -16,7 +16,7 @@ export class User {
   @Prop({ required: false })
   name: string;
 
-  @Prop({ required: true }) 
+  @Prop({ required: false }) 
   DOB: Date;
 
   @Prop({ required: false })

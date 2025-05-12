@@ -28,9 +28,9 @@ export class UserService {
 
 
     const user = new this.userModel({
-      createUserDto,
+      ...createUserDto,  // Spread the DTO properties instead of nesting
     });
-    user.save();
+    await user.save();
 
 
     const access_token = await this.authService.getAccessToken(user._id);

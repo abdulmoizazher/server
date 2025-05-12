@@ -6,6 +6,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {CreateUserprofile} from './dto/create-user.profile' 
 import{set_user_preferencesDto} from './dto/set.preference.dto'
+import { GetUserDto } from './dto/getuser.dto';
 
 @Controller('user')
 export class UserController {
@@ -45,4 +46,11 @@ export class UserController {
   async get_user_preference(@Request() req) {
     return this.userService.get_user_preference(req.user.userId);
   }
+
+
+  @Get('admin')
+  async get_User(@Body() dto:GetUserDto) {
+    return this.userService.getUser(dto.userid);
+  }
+
 }
