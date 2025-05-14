@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 import { AuthService } from 'src/auth/auth.service';
 import { console } from 'inspector';
 import { ConfigService } from '@nestjs/config';
+import { update_sentimentDto } from './dtos/update_sentiment.dto';
 
 
 @Injectable()
@@ -153,6 +154,12 @@ async get_sentiment_history(userID: string): Promise<any> {
     return new_record;
   }
      
+  }
+
+  async update_senitment_with_dto (update_sentimentdto:update_sentimentDto ,userID:string ){
+
+    this.update_sentiment(update_sentimentdto.sentiment, userID)
+
   }
 
 }

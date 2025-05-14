@@ -46,12 +46,14 @@ export class ResourcesService {
     async list():Promise<any>{
 
         const resources = await this.ResourceModel
-      .find({}, { title: 1, preview: 1,likes: 1,  _id: 0 }) .lean() .exec();
+      .find({}, { title: 1, preview: 1,likes: 1,  _id: 1 }) .lean() .exec();
 
     return resources.map(resource => ({
+      article_id : resource._id,
       title: resource.title,
       preview: resource.preview, 
       likes : resource.likes
+      
     }));
 
     }
@@ -62,6 +64,7 @@ export class ResourcesService {
     try {
       const resource =  await this.ResourceModel.find({ category }).exec();
     return resource.map(resource => ({
+        article_id : resource._id,
         title: resource.title,
         preview: resource.preview, 
         likes : resource.likes

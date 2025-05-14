@@ -12,7 +12,7 @@ export class ResourcesController {
         private readonly resourceSerivce: ResourcesService
     ) { }
 
-    @UseGuards(JwtAuthGuard)
+    
 
     @Get("/category/:category")
     @ApiOperation({ 
@@ -41,6 +41,17 @@ export class ResourcesController {
     description: 'The unique ID of the resource',
     example: '507f1f77bcf86cd799439011'
   })
+  
+
+  @ApiResponse({
+    status: 200,
+    description: 'Resource found and returned',
+    type: CreateResourceDto
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Resource not found'
+  })
     async get_resources(@Param('article_id') article_id: string) {
         return this.resourceSerivce.id(article_id);
     }
@@ -56,6 +67,17 @@ export class ResourcesController {
     description: 'Title of the resource (URL-encoded if spaces)',
     example: 'Introduction%20to%20NestJS'
   })
+
+  @ApiResponse({
+    status: 200,
+    description: 'Resource found and returned',
+    type: CreateResourceDto
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Resource not found'
+  })
+  
     async get_resource(@Query('title') title: string) {
         return this.resourceSerivce.title(title);
     }
