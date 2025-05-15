@@ -10,6 +10,7 @@ import { RecommandationModule } from './recommandation/recommandation.module';
 import { SentimentalAnalysisModule } from './sentimental_analysis/sentimental_analysis.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
 import { GeminiService } from './gemini/gemini.service';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { GeminiService } from './gemini/gemini.service';
     RecommandationModule,
     SentimentalAnalysisModule,
     ChatbotModule,
+    FeedbackModule,
   ],
   controllers: [AppController],
   providers: [AppService, GeminiService],
