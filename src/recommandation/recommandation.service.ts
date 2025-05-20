@@ -50,7 +50,7 @@ export class RecommandationService {
                 "confusion", "realization", "surprise", "unknown", "neutral"
             ];
             console.log(Object.keys(this.sentisrv));
-            console.log('check')
+            console.log(user_preference)
             const sentiment_upper = await this.sentisrv.get_current_sentiment(userId);
 
             if (!sentiment_upper || sentiment_upper === "user did not talk to the model today" || sentiment_upper === "An error occurred") {
@@ -62,16 +62,16 @@ export class RecommandationService {
 
 
                 if (positiveEmotions.includes(sentiment)) {
-                    return this.fetch_videos(user_preference.mood_happy);
+                    return this.fetch_videos(user_preference.mood_happy[0]);
 
                 }
 
                 else if (negativeEmotions.includes(sentiment)) {
-                    return this.fetch_videos(user_preference.mood_sad);
+                    return this.fetch_videos(user_preference.mood_sad[0]);
                 }
 
                 else if (neutralEmotions.includes(sentiment)) {
-                    return this.fetch_videos(user_preference.mood_confused);
+                    return this.fetch_videos(user_preference.mood_confused[0]);
                 }
 
 
@@ -81,6 +81,8 @@ export class RecommandationService {
     }
 
     async fetch_videos(searchquery: string) {
+
+        console.log(searchquery)
 
         const response = await axios.get(this.youtubeApiUrl, {
             params: {
